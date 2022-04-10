@@ -91,11 +91,16 @@ public class AolController {
         try {
             reader = new BufferedReader(new FileReader("src/main/resources/SOL_SOLICITUD_202204081619.csv"));
             String line = reader.readLine();
+
+            int i =0;
             while (line != null) {
                 ServletOutputStream so = response.getOutputStream();
-                so.println("   -    " + line);
+                String[] valores = line.split(";");
+                
+                so.println(i +" - " + line[0]+" - " + line[1]);
 
                 // read next line
+                i++;
                 line = reader.readLine();
             }
             reader.close();
