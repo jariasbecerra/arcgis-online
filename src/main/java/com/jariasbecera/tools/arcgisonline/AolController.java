@@ -93,7 +93,7 @@ public class AolController {
             String line = reader.readLine();
             while (line != null) {
                 ServletOutputStream so = response.getOutputStream();
-                so.println(line);
+                so.println("   -    " + line);
 
                 // read next line
                 line = reader.readLine();
