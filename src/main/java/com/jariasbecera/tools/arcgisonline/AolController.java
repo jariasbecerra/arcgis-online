@@ -97,7 +97,7 @@ public class AolController {
                 ServletOutputStream so = response.getOutputStream();
                 String[] valores = line.split(";");
                 
-                so.println(i +" - " + line[0]+" - " + line[1]);
+                so.println(i +" - " + valores[0]+" - " + valores[1]);
 
                 // read next line
                 i++;
