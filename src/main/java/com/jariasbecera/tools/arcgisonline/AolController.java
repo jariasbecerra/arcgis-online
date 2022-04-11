@@ -80,9 +80,7 @@ public class AolController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return respuesta;
-
     }
 
     @GetMapping(value = "/file")
@@ -92,20 +90,54 @@ public class AolController {
             reader = new BufferedReader(new FileReader("src/main/resources/SOL_SOLICITUD_202204081619.csv"));
             String line = reader.readLine();
 
-            int i =0;
+            int i = 0;
             while (line != null) {
                 ServletOutputStream so = response.getOutputStream();
-                String[] valores = line.split(";");    
-                so.println(i +" - " + valores[0]+" - " + valores[1]+" - " + valores[2]);
+                String[] valores = line.split(";");
+                so.println(i + " - " + valores[0] + " - " + valores[1] + " - " + valores[2]);
+                
+                llamadoAol("","");
                 
                 // read next line
                 i++;
                 line = reader.readLine();
             }
             reader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
+    private String llamadoAol(String url, String token) throws Exception {
+
+        HttpPost post = new HttpPost(url);
+
+        String respuesta = "";
+
+        // add request parameter, form parameters
+        List<NameValuePair> urlParameters = new ArrayList<>();
+        urlParameters.add(new BasicNameValuePair("username", token));
+        //urlParameters.add(new BasicNameValuePair("password", password));
+        //urlParameters.add(new BasicNameValuePair("request", request));
+        //urlParameters.add(new BasicNameValuePair("expiration", expiration));
+        //urlParameters.add(new BasicNameValuePair("f", f));
+        //urlParameters.add(new BasicNameValuePair("referer", referer));
+
+        post.setEntity(new UrlEncodedFormEntity(urlParameters));
+
+        try {
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            CloseableHttpResponse response = httpClient.execute(post);
+            HttpEntity entity = response.getEntity();
+            respuesta = EntityUtils.toString(entity);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return respuesta;
+
+    }
+
 }
