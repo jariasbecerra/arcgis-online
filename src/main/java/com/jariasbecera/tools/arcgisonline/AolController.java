@@ -1,10 +1,15 @@
 package com.jariasbecera.tools.arcgisonline;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +23,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -136,5 +145,72 @@ public class AolController {
 
         return respuesta;
     }
+
+    private String llamadoURL(String url) throws Exception {
+        HttpPost post = new HttpPost(url);
+        String respuesta = "";
+
+        // add request parameter, form parameters
+        List<NameValuePair> urlParameters = new ArrayList<>();
+        //urlParameters.add(new BasicNameValuePair("username", token));
+        //urlParameters.add(new BasicNameValuePair("password", password));
+        //urlParameters.add(new BasicNameValuePair("request", request));
+        //urlParameters.add(new BasicNameValuePair("expiration", expiration));
+        //urlParameters.add(new BasicNameValuePair("f", f));
+        //urlParameters.add(new BasicNameValuePair("referer", referer));
+        
+        post.setEntity(new UrlEncodedFormEntity(urlParameters));
+
+        try {
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            CloseableHttpResponse response = httpClient.execute(post);
+            HttpEntity entity = response.getEntity();
+            respuesta = EntityUtils.toString(entity);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return respuesta;
+    }    
+
+
+    @GetMapping(value = "/filexls")
+    public void filexls(HttpServletResponse response) {
+    
+        try {
+
+            FileInputStream file = new FileInputStream(new File("src/main/resources/FOTOS.xlsx"));
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+       
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            int rows = sheet.getLastRowNum();
+            
+
+            for (int i = 1; i <= rows; i++) {
+                XSSFRow row = sheet.getRow(i);
+        
+                System.out.println(row.getRowNum());
+                //System.out.println("Valor: "+row.getCell(4).getStringCellValue());                
+                String rta = llamadoURL(row.getCell(4).getStringCellValue());
+
+                XSSFCell cell = row.createCell(5);
+                cell.setCellValue("aaaaaaa");
+            }
+            
+            
+            FileOutputStream outFile =new FileOutputStream(new File("src/main/resources/FOTOS2.xlsx"));
+            workbook.write(outFile);
+            outFile.close();
+            
+            
+            workbook.close();
+            file.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }    
 
 }
