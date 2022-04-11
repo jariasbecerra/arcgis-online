@@ -110,9 +110,7 @@ public class AolController {
     }
 
     private String llamadoAol(String url, String token) throws Exception {
-
         HttpPost post = new HttpPost(url);
-
         String respuesta = "";
 
         // add request parameter, form parameters
@@ -123,7 +121,7 @@ public class AolController {
         //urlParameters.add(new BasicNameValuePair("expiration", expiration));
         //urlParameters.add(new BasicNameValuePair("f", f));
         //urlParameters.add(new BasicNameValuePair("referer", referer));
-
+        
         post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
         try {
@@ -137,7 +135,6 @@ public class AolController {
         }
 
         return respuesta;
-
     }
 
 }
