@@ -18,6 +18,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -146,26 +147,17 @@ public class AolController {
         return respuesta;
     }
 
-    private String llamadoURL(String url) throws Exception {
-        HttpPost post = new HttpPost(url);
-        String respuesta = "";
+    private String llamadoURLGet(String url) throws Exception {
 
-        // add request parameter, form parameters
-        List<NameValuePair> urlParameters = new ArrayList<>();
-        //urlParameters.add(new BasicNameValuePair("username", token));
-        //urlParameters.add(new BasicNameValuePair("password", password));
-        //urlParameters.add(new BasicNameValuePair("request", request));
-        //urlParameters.add(new BasicNameValuePair("expiration", expiration));
-        //urlParameters.add(new BasicNameValuePair("f", f));
-        //urlParameters.add(new BasicNameValuePair("referer", referer));
-        
-        post.setEntity(new UrlEncodedFormEntity(urlParameters));
+        HttpGet get = new HttpGet(url);
+        String respuesta = "";
 
         try {
             CloseableHttpClient httpClient = HttpClients.createDefault();
-            CloseableHttpResponse response = httpClient.execute(post);
+            CloseableHttpResponse response = httpClient.execute(get);
             HttpEntity entity = response.getEntity();
             respuesta = EntityUtils.toString(entity);
+            //respuesta =  response.getStatusLine().getStatusCode()+"";
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,10 +184,44 @@ public class AolController {
         
                 System.out.println(row.getRowNum());
                 //System.out.println("Valor: "+row.getCell(4).getStringCellValue());                
-                String rta = llamadoURL(row.getCell(4).getStringCellValue());
+                String rta = "";
+                XSSFCell cell = row.createCell(5); 
 
-                XSSFCell cell = row.createCell(5);
-                cell.setCellValue("aaaaaaa");
+                try{
+                    rta = llamadoURLGet(row.getCell(4).getStringCellValue());                                                 
+                    cell.setCellValue( rta);                     
+                }catch(Exception e) {
+                    rta="200";
+                    cell.setCellValue( rta);
+                    //e.printStackTrace();
+                }
+
+
+                rta = "";
+                cell = row.createCell(7); 
+
+                try{
+                    rta = llamadoURLGet(row.getCell(6).getStringCellValue());                                                 
+                    cell.setCellValue( rta);                     
+                }catch(Exception e) {
+                    rta="200";
+                    cell.setCellValue( rta);
+                    //e.printStackTrace();
+                }
+                
+                
+                rta = "";
+                cell = row.createCell(9); 
+
+                try{
+                    rta = llamadoURLGet(row.getCell(8).getStringCellValue());                                                 
+                    cell.setCellValue( rta);                     
+                }catch(Exception e) {
+                    rta="200";
+                    cell.setCellValue( rta);
+                    //e.printStackTrace();
+                }                
+
             }
             
             
